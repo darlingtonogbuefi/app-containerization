@@ -1,5 +1,4 @@
 ##  this the file location cribr-cicd\buildspec.yml
-
 version: 0.2
 
 env:
@@ -20,8 +19,8 @@ phases:
       - echo "Logging in to ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - echo "Ensuring ECR repository exists..."
-      - |
-        aws ecr describe-repositories --repository-names cribr-app-repo --region $AWS_REGION || \
+      - >
+        aws ecr describe-repositories --repository-names cribr-app-repo --region $AWS_REGION || 
         aws ecr create-repository --repository-name cribr-app-repo --region $AWS_REGION
 
   build:
