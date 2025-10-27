@@ -20,12 +20,14 @@ phases:
       - echo "Logging in to ECR..."
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
       - echo "Ensuring ECR repository exists..."
-      - aws ecr describe-repositories --repository-names cribr-app-repo --region $AWS_REGION || aws ecr create-repository --repository-name cribr-app-repo --region $AWS_REGION
+      - |
+        aws ecr describe-repositories --repository-names cribr-app-repo --region $AWS_REGION || \
+        aws ecr create-repository --repository-name cribr-app-repo --region $AWS_REGION
 
   build:
     commands:
       - echo "Building Docker image..."
-      - IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cribr-app-repo:$IMAGE_VERSION
+      - export IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cribr-app-repo:$IMAGE_VERSION
       - echo "Using image name $IMAGE_NAME"
       - docker build -t $IMAGE_NAME ./app
       - docker push $IMAGE_NAME
