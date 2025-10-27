@@ -42,6 +42,6 @@ resource "aws_codebuild_project" "cribr_build" {
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "cribr-cicd/buildspec.yml"  # updated path if buildspec is not at repo root
+    buildspec = "buildspec.yml"  # updated path if buildspec is not at repo root
   }
 }
