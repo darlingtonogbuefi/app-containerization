@@ -76,7 +76,7 @@ module "cribr_eks" {
   eks_managed_node_groups = {
     default = {
       node_group_name = "${var.name_prefix}-node-group"
-      desired_size   = 4
+      desired_size   = 3
       max_size       = 5
       min_size       = 3
       instance_types = ["t3.micro"]
