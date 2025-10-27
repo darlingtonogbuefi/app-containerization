@@ -20,7 +20,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cribr-container
-          image: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:v1.2.3
+          image: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:v1.1
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
