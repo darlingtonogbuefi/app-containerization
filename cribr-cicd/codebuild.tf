@@ -15,7 +15,7 @@ resource "aws_codebuild_project" "cribr_build" {
   }
 
   environment {
-    compute_type    = "BUILD_GENERAL1_SMALL"
+    compute_type    = "BUILD_GENERAL1_LARGE"
     image           = "aws/codebuild/standard:7.0"
     type            = "LINUX_CONTAINER"
     privileged_mode = true
