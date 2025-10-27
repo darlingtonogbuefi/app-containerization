@@ -35,9 +35,10 @@ resource "aws_codebuild_project" "cribr_build" {
 
     environment_variable {
       name  = "SONAR_TOKEN"
-      value = var.sonar_token
-      type  = "SECRETS_MANAGER"  # use Secrets Manager for sensitive info
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-sonarqube-token-OKMk3p"
+      type  = "SECRETS_MANAGER"
     }
+
   }
 
   source {
