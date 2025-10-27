@@ -10,7 +10,7 @@ output "github_secret_arn" {
   value       = aws_secretsmanager_secret.github.arn
 }
 
-# ✅ SonarQube Secret ARN (requires secrets.tf)
+# SonarQube Secret ARN (requires secrets.tf)
 output "sonarqube_secret_arn" {
   description = "ARN of the SonarQube token secret"
   value       = aws_secretsmanager_secret.sonarqube.arn
