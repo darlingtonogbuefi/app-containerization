@@ -7,6 +7,13 @@
 #############################################
 # CodeBuild Role
 #############################################
+#############################################
+# IAM Roles for CI/CD
+#############################################
+
+#############################################
+# CodeBuild Role
+#############################################
 resource "aws_iam_role" "codebuild_role" {
   name = "${var.project_name}-codebuild-role"
 
@@ -47,7 +54,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Action = [
           "s3:GetObject",
           "s3:PutObject",
-          "s3:GetBucketLocation"
+          "s3:GetBucketLocation",
+          "s3:ListBucket"
         ]
         Resource = "*"
       },
@@ -61,7 +69,29 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "ecr:GetDownloadUrlForLayer",
           "ecr:InitiateLayerUpload",
           "ecr:PutImage",
-          "ecr:UploadLayerPart"
+          "ecr:UploadLayerPart",
+          "ecr:DescribeRepositories",
+          "ecr:ListImages"
+        ]
+        Resource = "*"
+      },
+      # EKS Access
+      {
+        Effect = "Allow"
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters",
+          "eks:ListUpdates",
+          "eks:DescribeUpdate"
+        ]
+        Resource = "*"
+      },
+      # Secrets Manager access
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
         ]
         Resource = "*"
       },
@@ -75,17 +105,20 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         ]
         Resource = "*"
       },
-      # Allow Role Pass-Through
+      # IAM PassRole
       {
         Effect = "Allow"
         Action = "iam:PassRole"
         Resource = "*"
       },
-      # Secrets Manager access for SONAR_TOKEN
+      # KMS access if secrets or artifacts are encrypted
       {
         Effect = "Allow"
         Action = [
-          "secretsmanager:GetSecretValue"
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
         ]
         Resource = "*"
       }
@@ -127,8 +160,11 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codebuild:StartBuild",
           "codebuild:BatchGetBuilds",
           "codestar-connections:UseConnection",
-          "s3:*",
-          "iam:PassRole"
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket",
+          "iam:PassRole",
+          "cloudwatch:*"
         ]
         Resource = "*"
       }
