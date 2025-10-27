@@ -18,7 +18,7 @@ phases:
       - echo Setting IMAGE_TAG variable
       - IMAGE_TAG=latest
       - echo Setting up kubectl...
-      - aws eks --region us-east-1 update-kubeconfig --name cribr-eks-cluster
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
 
   build:
     commands:
