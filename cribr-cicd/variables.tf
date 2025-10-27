@@ -60,7 +60,9 @@ variable "sonar_token" {
   description = "SonarQube authentication token used for static code analysis"
   type        = string
   sensitive   = true
+  default     = "cribr-sonarqube-token"
 }
+
 
 variable "sonar_project_key" {
   description = "SonarQube project key used in analysis"
