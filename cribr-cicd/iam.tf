@@ -87,7 +87,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Action = [
           "secretsmanager:GetSecretValue"
         ]
-        Resource = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.sonar_token}*"
+        Resource = "*"
       }
     ]
   })
