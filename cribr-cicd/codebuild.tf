@@ -44,6 +44,27 @@ resource "aws_codebuild_project" "cribr_build" {
       value = "darlingtonogbuefi_app-containerization"
       type  = "PLAINTEXT"
     }
+
+    environment_variable {
+      name  = "ECR_REPO_URI"
+      value = "493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo"
+    }
+
+    environment_variable {
+      name  = "IMAGE_TAG"
+      value = "latest"
+    }
+
+    environment_variable {
+      name  = "K8S_NAMESPACE"
+      value = "cribr-ns"
+    }
+
+    environment_variable {
+      name  = "DEPLOYMENT_YAML"
+      value = "cribr-cicd/deployment.yaml"
+    }
+
   }
 
   source {
