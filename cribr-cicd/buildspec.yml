@@ -1,10 +1,8 @@
-##  this the file location cribr-cicd\buildspec.yml
-version: 0.2
+# cribr-cicd\buildspec.yml
 
-env:
-  variables:
-    # Default image version; can be overridden by environment variable in CodeBuild
-    IMAGE_VERSION: "v1.1"
+
+
+version: 0.2
 
 phases:
   install:
@@ -26,7 +24,7 @@ phases:
   build:
     commands:
       - echo "Building Docker image..."
-      - export IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cribr-app-repo:$IMAGE_VERSION
+      - export IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cribr-app-repo:latest
       - echo "Using image name $IMAGE_NAME"
       - docker build -t $IMAGE_NAME ./app
       - docker push $IMAGE_NAME

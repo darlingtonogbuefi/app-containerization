@@ -40,22 +40,23 @@ resource "aws_codebuild_project" "cribr_build" {
     }
 
     environment_variable {
-      name  = "IMAGE_VERSION"
-      value = "v1.1"
-      type  = "PLAINTEXT"
-    }
-
-    environment_variable {
       name  = "SONAR_PROJECT_KEY"
-      value = "darlingtonogbuefi_app-containerization"  # replace with your actual SonarQube project key
+      value = "darlingtonogbuefi_app-containerization"
       type  = "PLAINTEXT"
     }
-
-
   }
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "cribr-cicd/buildspec.yml"  # updated path if buildspec is not at repo root
+    buildspec = "cribr-cicd/buildspec.yml"  # make sure this matches your repo
+  }
+
+  # Optional: enable CloudWatch logs
+  logs_config {
+    cloudwatch_logs {
+      status      = "ENABLED"
+      group_name  = "/aws/codebuild/${var.project_name}"
+      stream_name = "build-log"
+    }
   }
 }
