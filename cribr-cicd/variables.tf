@@ -67,7 +67,7 @@ variable "sonar_token" {
 variable "sonar_project_key" {
   description = "SonarQube project key used in analysis"
   type        = string
-  default     = "cribr-ci-cd"
+  default     = "darlingtonogbuefi_app-containerization"
 }
 
 ##############################

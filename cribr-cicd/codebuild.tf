@@ -39,6 +39,19 @@ resource "aws_codebuild_project" "cribr_build" {
       type  = "SECRETS_MANAGER"
     }
 
+    environment_variable {
+      name  = "IMAGE_VERSION"
+      value = "v1.1"
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SONAR_PROJECT_KEY"
+      value = "darlingtonogbuefi_app-containerization"  # replace with your actual SonarQube project key
+      type  = "PLAINTEXT"
+    }
+
+
   }
 
   source {
