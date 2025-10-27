@@ -67,8 +67,8 @@ cribr-core-infra/terraform_user_creds.txt
 .env.production
 terraform.tfvars 
 cribr-cicd/cribr-secrets.yaml
-cribr-cicd/cribr-secrets.yaml
 cribr-cicd/terraform.tfstate
 cribr-cicd/terraform.tfstate.backup
+cribr-cicd/terraform1.tfvars
 cribr-core-infra/cribr-core-stack/terraform.tfstate
 cribr-core-infra/cribr-core-stack/terraform.tfstate.backup
