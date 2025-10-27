@@ -1,25 +1,38 @@
+
+
 version: 0.2
+
+env:
+  variables:
+    ECR_REPO_URI: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo
+    K8S_NAMESPACE: cribr-ns
+    DEPLOYMENT_YAML: cribr-cicd/deployment.yaml
 
 phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
+      - aws --version
+      - echo Logging in to ECR...
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_URI
+      - echo Setting IMAGE_TAG variable
+      - IMAGE_TAG=latest
+      - echo Setting up kubectl...
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
 
   build:
     commands:
       - echo Building Docker image...
-      - docker build -t cribr-app .
-      - echo Tagging Docker image for ECR...
-      - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
+      - docker build -t $ECR_REPO_URI:$IMAGE_TAG .
+      - echo Docker image built successfully
 
   post_build:
     commands:
       - echo Pushing Docker image to ECR...
-      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
+      - docker push $ECR_REPO_URI:$IMAGE_TAG
       - echo Updating Kubernetes deployment...
-      - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
-      - kubectl apply -f cribr-cicd/deployment.yaml
+      - kubectl set image -n $K8S_NAMESPACE deployment/cribr-app cribr-container=$ECR_REPO_URI:$IMAGE_TAG
+      - kubectl apply -f $DEPLOYMENT_YAML
       - echo Deployment complete.
 
 artifacts:
