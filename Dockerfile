@@ -1,4 +1,4 @@
-#  Dockerfile
+# Dockerfile
 
 # syntax=docker/dockerfile:1.4
 
