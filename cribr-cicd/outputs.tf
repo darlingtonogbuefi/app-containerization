@@ -1,10 +1,10 @@
-//  cribr-cicd\outputs.tf
+#  cribr-cicd\outputs.tf
 
 #############################################
 # Outputs
 #############################################
 
-# ✅ GitHub Secret ARN (requires secrets.tf)
+# GitHub Secret ARN (requires secrets.tf)
 output "github_secret_arn" {
   description = "ARN of the GitHub OAuth token secret"
   value       = aws_secretsmanager_secret.github.arn
