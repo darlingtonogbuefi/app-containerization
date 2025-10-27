@@ -67,3 +67,117 @@ variable "sonar_project_key" {
   type        = string
   default     = "cribr-ci-cd"
 }
+
+##############################
+# Supabase
+##############################
+variable "supabase_project_id" {
+  description = "Supabase project ID"
+  type        = string
+}
+
+variable "supabase_url" {
+  description = "Supabase project URL"
+  type        = string
+}
+
+variable "supabase_anon_key" {
+  description = "Supabase anon key for frontend access"
+  type        = string
+  sensitive   = true
+}
+
+variable "supabase_service_key" {
+  description = "Supabase service key for backend operations"
+  type        = string
+  sensitive   = true
+}
+
+variable "next_public_supabase_url" {
+  description = "Next.js frontend Supabase URL"
+  type        = string
+}
+
+variable "next_public_supabase_anon_key" {
+  description = "Next.js frontend Supabase anon key"
+  type        = string
+  sensitive   = true
+}
+
+variable "next_public_site_url" {
+  description = "Public site URL"
+  type        = string
+}
+
+##############################
+# Stripe
+##############################
+variable "stripe_secret_key" {
+  description = "Stripe secret key"
+  type        = string
+  sensitive   = true
+}
+
+variable "stripe_webhook_secret" {
+  description = "Stripe webhook secret"
+  type        = string
+  sensitive   = true
+}
+
+variable "next_public_stripe_publishable_key" {
+  description = "Stripe publishable key for frontend"
+  type        = string
+}
+
+##############################
+# 3rd Party APIs
+##############################
+variable "assemblyai_api_key" {
+  description = "AssemblyAI API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "transcript_io_api_key" {
+  description = "Transcript.io API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "dumplingai_api_key" {
+  description = "DumplingAI API key"
+  type        = string
+  sensitive   = true
+}
+
+##############################
+# Auth URLs
+##############################
+variable "next_public_auth_redirect_url" {
+  description = "Auth redirect URL for Next.js"
+  type        = string
+}
+
+variable "next_public_auth_sign_in_url" {
+  description = "Sign-in URL for Next.js"
+  type        = string
+}
+
+variable "next_public_auth_sign_up_url" {
+  description = "Sign-up URL for Next.js"
+  type        = string
+}
+
+##############################
+# OAuth / Google / YouTube
+##############################
+variable "youtube_api_key" {
+  description = "YouTube API key"
+  type        = string
+  sensitive   = true
+}
+
+variable "next_public_google_client_id" {
+  description = "Google OAuth Client ID for frontend"
+  type        = string
+}
