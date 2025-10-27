@@ -1,40 +1,45 @@
 # cribr-cicd\buildspec.yml
 
-
-
 version: 0.2
 
-phases:
-  install:
-    runtime-versions:
-      nodejs: 20
-    commands:
-      - echo "Installing dependencies..."
-      - npm install
+env:
+  variables:
+    # ECR repository URI
+    ECR_REPO_URI: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo
+    # Kubernetes namespace
+    K8S_NAMESPACE: cribr-ns
+    # Deployment YAML path
+    DEPLOYMENT_YAML: cribr-cicd/deployment.yaml
 
+phases:
   pre_build:
     commands:
-      - echo "Logging in to ECR..."
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - echo "Ensuring ECR repository exists..."
-      - >
-        aws ecr describe-repositories --repository-names cribr-app-repo --region $AWS_REGION || 
-        aws ecr create-repository --repository-name cribr-app-repo --region $AWS_REGION
+      - echo Logging in to Amazon ECR...
+      - aws --version
+      - $(aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ECR_REPO_URI)
+      - REPO_NAME=$(echo $ECR_REPO_URI | awk -F/ '{print $2}')
+      - IMAGE_TAG=latest
+      - echo Build will use image: $ECR_REPO_URI:$IMAGE_TAG
+      - echo Setting up kubectl...
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-eks-cluster
 
   build:
     commands:
-      - echo "Building Docker image..."
-      - export IMAGE_NAME=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cribr-app-repo:latest
-      - echo "Using image name $IMAGE_NAME"
-      - docker build -t $IMAGE_NAME ./app
-      - docker push $IMAGE_NAME
-      - echo "Running SonarQube analysis..."
-      - sonar-scanner -Dsonar.login=$SONAR_TOKEN -Dsonar.projectKey=$SONAR_PROJECT_KEY
+      - echo Building Docker image...
+      - docker build -t $ECR_REPO_URI:$IMAGE_TAG .
+      - echo Docker image built successfully
 
   post_build:
     commands:
-      - echo "Build and push completed. Image: $IMAGE_NAME"
+      - echo Pushing Docker image to ECR...
+      - docker push $ECR_REPO_URI:$IMAGE_TAG
+      - echo Updating Kubernetes deployment...
+      # Replace image in deployment YAML dynamically
+      - kubectl set image -n $K8S_NAMESPACE deployment/cribr-app cribr-container=$ECR_REPO_URI:$IMAGE_TAG
+      - kubectl apply -f $DEPLOYMENT_YAML
+      - echo Deployment complete.
 
 artifacts:
   files:
     - '**/*'
+
