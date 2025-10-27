@@ -1,4 +1,4 @@
-#  cribr-cicd\codebuild.tf
+## cribr-cicd\codebuild.tf
 
 #############################################
 # AWS CodeBuild Project
@@ -15,14 +15,33 @@ resource "aws_codebuild_project" "cribr_build" {
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:7.0"
-    type                        = "LINUX_CONTAINER"
-    privileged_mode             = true
+    compute_type    = "BUILD_GENERAL1_SMALL"
+    image           = "aws/codebuild/standard:7.0"
+    type            = "LINUX_CONTAINER"
+    privileged_mode = true
+
+    # Environment variables for your build
+    environment_variable {
+      name  = "AWS_ACCOUNT_ID"
+      value = var.aws_account_id
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "AWS_REGION"
+      value = var.aws_region
+      type  = "PLAINTEXT"
+    }
+
+    environment_variable {
+      name  = "SONAR_TOKEN"
+      value = var.sonar_token
+      type  = "SECRETS_MANAGER"  # use Secrets Manager for sensitive info
+    }
   }
 
   source {
-    type            = "CODEPIPELINE"
-    buildspec       = "buildspec.yml"
+    type      = "CODEPIPELINE"
+    buildspec = "cribr-cicd/buildspec.yml"  # updated path if buildspec is not at repo root
   }
 }
