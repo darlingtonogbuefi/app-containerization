@@ -46,10 +46,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:GetBucketLocation",
-          "s3:ListBucket"
+          "s3:*"
         ]
         Resource = "*"
       },
@@ -57,15 +54,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:CompleteLayerUpload",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:InitiateLayerUpload",
-          "ecr:PutImage",
-          "ecr:UploadLayerPart",
-          "ecr:DescribeRepositories",
-          "ecr:ListImages"
+          "ecr:*"
         ]
         Resource = "*"
       },
@@ -73,10 +62,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
-          "eks:DescribeCluster",
-          "eks:ListClusters",
-          "eks:ListUpdates",
-          "eks:DescribeUpdate"
+          "eks:*"
         ]
         Resource = "*"
       },
@@ -84,8 +70,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
-          "secretsmanager:GetSecretValue",
-          "secretsmanager:DescribeSecret"
+          "secretsmanager:*"
         ]
         Resource = "*"
       },
