@@ -43,17 +43,17 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       },
       # S3 Artifacts Access
       {
-        Effect = "Allow",
+        Effect = "Allow"
         Action = [
           "s3:GetObject",
           "s3:PutObject",
           "s3:GetBucketLocation"
-        ],
+        ]
         Resource = "*"
       },
       # ECR Docker Image Push/Pull
       {
-        Effect = "Allow",
+        Effect = "Allow"
         Action = [
           "ecr:GetAuthorizationToken",
           "ecr:BatchCheckLayerAvailability",
@@ -62,24 +62,32 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "ecr:InitiateLayerUpload",
           "ecr:PutImage",
           "ecr:UploadLayerPart"
-        ],
+        ]
         Resource = "*"
       },
       # Deployment Access (ECS, Lambda, CloudFormation)
       {
-        Effect = "Allow",
+        Effect = "Allow"
         Action = [
           "ecs:*",
           "lambda:*",
           "cloudformation:*"
-        ],
+        ]
         Resource = "*"
       },
       # Allow Role Pass-Through
       {
-        Effect = "Allow",
-        Action = "iam:PassRole",
+        Effect = "Allow"
+        Action = "iam:PassRole"
         Resource = "*"
+      },
+      # Secrets Manager access for SONAR_TOKEN
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:GetSecretValue"
+        ]
+        Resource = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:${var.sonar_token}*"
       }
     ]
   })
@@ -114,14 +122,14 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
     Statement = [
       # Allow Pipeline to Start Builds & Manage Artifacts
       {
-        Effect = "Allow",
+        Effect = "Allow"
         Action = [
           "codebuild:StartBuild",
           "codebuild:BatchGetBuilds",
           "codestar-connections:UseConnection",
           "s3:*",
           "iam:PassRole"
-        ],
+        ]
         Resource = "*"
       }
     ]
