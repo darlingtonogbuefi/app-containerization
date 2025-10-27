@@ -12,7 +12,8 @@ RUN npm ci --omit=dev
 
 
 # --- Stage 2: Build the app ---
-FROM node:20-alpine AS builder
+FROM 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:node-20-alpine AS builder
+
 WORKDIR /app
 
 # Copy node_modules from deps stage

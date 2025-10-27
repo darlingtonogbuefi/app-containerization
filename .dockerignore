@@ -1,3 +1,5 @@
+#  .dockerignore
+
 # Don't copy these into Docker image
 #  .dockerignore file
 # Ignore node modules and package managers artifacts
@@ -24,6 +26,7 @@ coverage/
 # Ignore environment and secret files
 .env
 .env*.local
+!.env.production
 secrets.yaml
 
 # Ignore logs and debug files
