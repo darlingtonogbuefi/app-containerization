@@ -57,6 +57,7 @@ structure.txt
 
 # Ignore IDE specific files
 .terraform/
+
 cribr-core-infra/.terraform
 cribr-core-infra/.terraform.lock.hcl
 cribr-core-infra/terraform.tfstate*
@@ -65,5 +66,9 @@ cribr-core-infra/set-aws-creds.bat
 cribr-core-infra/terraform_user_creds.txt
 .env.production
 terraform.tfvars 
-cribr-cicd\cribr-secrets.yaml
-terraform1.tfvars
+cribr-cicd/cribr-secrets.yaml
+cribr-cicd/cribr-secrets.yaml
+cribr-cicd/terraform.tfstate
+cribr-cicd/terraform.tfstate.backup
+cribr-core-infra/cribr-core-stack/terraform.tfstate
+cribr-core-infra/cribr-core-stack/terraform.tfstate.backup
