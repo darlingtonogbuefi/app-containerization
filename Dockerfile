@@ -3,7 +3,7 @@
 # syntax=docker/dockerfile:1.4
 
 # --- Stage 1: Install dependencies ---
-FROM node:20-alpine AS deps
+FROM 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:node-20-alpine AS deps
 WORKDIR /app
 
 # Copy only package files first for better caching
@@ -36,7 +36,7 @@ RUN npm prune --production
 
 
 # --- Stage 3: Production runner ---
-FROM node:20-alpine AS runner
+FROM 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:node-20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
