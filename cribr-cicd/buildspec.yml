@@ -1,5 +1,10 @@
 version: 0.2
 
+env:
+  secrets-manager:
+    DOCKERHUB_USERNAME: cribr-dockerhub-credentials:DOCKERHUB_USERNAME
+    DOCKERHUB_PASSWORD: cribr-dockerhub-credentials:DOCKERHUB_PASSWORD
+
 phases:
   pre_build:
     commands:
