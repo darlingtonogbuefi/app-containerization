@@ -32,6 +32,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env.production
 .env*.local
 .env
 
@@ -57,20 +58,12 @@ node_modules/
 secrets.yaml
 structure.txt
 
-# Ignore IDE specific files
+# Terraform state files
 .terraform/
+*.tfstate
+*.tfstate.*
+.terraform
+*.tfvars*
 
-cribr-core-infra/.terraform
-cribr-core-infra/.terraform.lock.hcl
-cribr-core-infra/terraform.tfstate*
-secrets.tf
-cribr-core-infra/set-aws-creds.bat
-cribr-core-infra/terraform_user_creds.txt
-.env.production
-terraform.tfvars 
-cribr-cicd/cribr-secrets.yaml
-cribr-cicd/terraform.tfstate
-cribr-cicd/terraform.tfstate.backup
-cribr-cicd/terraform1.tfvars
-cribr-core-infra/cribr-core-stack/terraform.tfstate
-cribr-core-infra/cribr-core-stack/terraform.tfstate.backup.terraform/
+
+

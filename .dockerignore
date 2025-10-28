@@ -67,7 +67,23 @@ generate_clean_tree.py
 .idea/
 cribr-core-infra
 terraform_user_creds.txt
-terraform.tfvars
-cribr-cicd/cribr-secrets.yaml
-terraform1.tfvars
 cribr-cicd
+
+# Terraform state files
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform
+*.tfvars*
+
+
+# Scripts not needed in image
+check-used-components.js
+delete-unused-components.js
+generate_clean_tree.py
+Dockerfile_Local_Testing
+Dockerfile_bak
+cribr-deployment*.yaml
+cribr-ingress-https.yaml
+tmp-pod.yaml
+
