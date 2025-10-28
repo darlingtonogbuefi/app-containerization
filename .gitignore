@@ -73,4 +73,4 @@ cribr-cicd/terraform.tfstate
 cribr-cicd/terraform.tfstate.backup
 cribr-cicd/terraform1.tfvars
 cribr-core-infra/cribr-core-stack/terraform.tfstate
-cribr-core-infra/cribr-core-stack/terraform.tfstate.backup
+cribr-core-infra/cribr-core-stack/terraform.tfstate.backup.terraform/
