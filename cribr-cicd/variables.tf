@@ -183,3 +183,18 @@ variable "next_public_google_client_id" {
   description = "Google OAuth Client ID for frontend"
   type        = string
 }
+
+##############################
+# DockerHub Credentials
+##############################
+variable "dockerhub_username" {
+  description = "DockerHub username used for image builds and pushes"
+  type        = string
+  sensitive   = true
+}
+
+variable "dockerhub_password" {
+  description = "DockerHub password or personal access token"
+  type        = string
+  sensitive   = true
+}

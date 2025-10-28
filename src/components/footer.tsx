@@ -161,7 +161,7 @@ export default function Footer({ user }: FooterProps) {
               <Linkedin className="h-6 w-6" />
             </a>
             <a
-              href="https://github.com/darlingtonogbuefi/cribr"
+              href="https://github.com/darlingtonogbuefi/containerize_and_deployto_k8s.git"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-400 hover:text-gray-500"

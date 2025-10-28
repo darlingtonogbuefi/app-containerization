@@ -71,7 +71,7 @@ export default function CommunityPage() {
           <ul className="list-disc list-inside space-y-2">
             <li>
               <a
-                href="https://github.com/darlingtonogbuefi/cribr"
+                href="https://github.com/darlingtonogbuefi/containerize_and_deployto_k8s.git"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline"

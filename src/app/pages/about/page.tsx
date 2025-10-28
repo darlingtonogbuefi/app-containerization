@@ -145,12 +145,12 @@ export default function AboutPage() {
           <p className="mb-4 text-lg">
             This project was a fun experience — feel free to clone, tweak, and re-create the app at{" "}
             <a
-              href="https://github.com/darlingtonogbuefi/cribr"
+              href="https://github.com/darlingtonogbuefi/containerize_and_deployto_k8s.git"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline"
             >
-              https://github.com/darlingtonogbuefi/cribr
+              https://github.com/darlingtonogbuefi/containerize_and_deployto_k8s.git
             </a>
             .
           </p>
