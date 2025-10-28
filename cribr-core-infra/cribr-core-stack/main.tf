@@ -64,15 +64,25 @@ module "cribr_eks" {
 
   cluster_name    = var.cluster_name
   cluster_version = "1.34"
-  vpc_id          = module.cribr_vpc.vpc_id
-  subnet_ids      = module.cribr_vpc.private_subnets
+
+  # Use the existing VPC and subnets from your cluster
+  vpc_id     = "vpc-0d97a781019ed571d"
+  subnet_ids = [
+    "subnet-0b560efca52b2845e",
+    "subnet-0c8dd61ab95ef8286"
+  ]
+
+  # Use the existing IAM role ARN
+  iam_role_arn = "arn:aws:iam::493834426110:role/cribr-cluster-cluster-20251026112651202200000001"
+
 
   enable_irsa = true
 
+  # Endpoint access matches the existing cluster
   cluster_endpoint_public_access  = true
   cluster_endpoint_private_access = true
 
-  # Managed Node Groups
+  # Managed Node Groups (update subnet_ids to match existing cluster)
   eks_managed_node_groups = {
     default = {
       node_group_name = "${var.name_prefix}-node-group"
@@ -80,9 +90,12 @@ module "cribr_eks" {
       max_size       = 5
       min_size       = 3
       instance_types = ["t3.micro"]
-      subnet_ids     = module.cribr_vpc.private_subnets
-      ami_type       = "AL2023_x86_64_STANDARD"
-      disk_size      = 20
+      subnet_ids     = [
+        "subnet-0b560efca52b2845e",
+        "subnet-0c8dd61ab95ef8286"
+      ]
+      ami_type  = "AL2023_x86_64_STANDARD"
+      disk_size = 20
 
       tags = {
         Name        = "${var.name_prefix}-node-group"
@@ -98,6 +111,7 @@ module "cribr_eks" {
     Environment = "dev"
   }
 }
+
 
 #############################################
 # Data Sources for EKS
