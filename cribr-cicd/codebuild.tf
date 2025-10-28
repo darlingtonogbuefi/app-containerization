@@ -38,6 +38,17 @@ resource "aws_codebuild_project" "cribr_build" {
       value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-sonarqube-token-OKMk3p"
       type  = "SECRETS_MANAGER"
     }
+    environment_variable {
+      name  = "DOCKERHUB_USERNAME"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:username::"
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "DOCKERHUB_PASSWORD"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:password::"
+      type  = "SECRETS_MANAGER"
+    }
 
     environment_variable {
       name  = "SONAR_PROJECT_KEY"
