@@ -16,7 +16,7 @@ output "sonarqube_secret_arn" {
   value       = aws_secretsmanager_secret.sonarqube.arn
 }
 
-# ✅ CodeBuild Project Name (make sure you have a resource 'aws_codebuild_project.cribr_build')
+# CodeBuild Project Name (make sure you have a resource 'aws_codebuild_project.cribr_build')
 output "codebuild_project_name" {
   description = "Name of the CodeBuild project used by CodePipeline"
   value       = aws_codebuild_project.cribr_build.name
