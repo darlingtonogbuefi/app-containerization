@@ -22,7 +22,7 @@ output "codebuild_project_name" {
   value       = aws_codebuild_project.cribr_build.name
 }
 
-# ✅ CodePipeline Name (exists in your codepipeline.tf)
+# CodePipeline Name (exists in your codepipeline.tf)
 output "codepipeline_name" {
   description = "Name of the created CodePipeline"
   value       = aws_codepipeline.cribr_pipeline.name
