@@ -68,6 +68,6 @@ generate_clean_tree.py
 cribr-core-infra
 terraform_user_creds.txt
 terraform.tfvars
-cribr-cicd\cribr-secrets.yaml
+cribr-cicd/cribr-secrets.yaml
 terraform1.tfvars
 cribr-cicd
