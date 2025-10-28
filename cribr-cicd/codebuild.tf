@@ -42,13 +42,13 @@ resource "aws_codebuild_project" "cribr_build" {
     # DockerHub credentials from Secrets Manager (corrected)
     environment_variable {
       name  = "DOCKERHUB_USERNAME"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:DOCKERHUB_USERNAME"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials:DOCKERHUB_USERNAME"
       type  = "SECRETS_MANAGER"
     }
 
     environment_variable {
       name  = "DOCKERHUB_PASSWORD"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:DOCKERHUB_PASSWORD"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials:DOCKERHUB_PASSWORD"
       type  = "SECRETS_MANAGER"
     }
 
