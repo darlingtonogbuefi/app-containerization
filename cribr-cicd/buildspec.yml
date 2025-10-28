@@ -22,7 +22,7 @@ phases:
   pre_build:
     commands:
       - echo "Verifying DockerHub credentials..."
-      - echo "DOCKERHUB_USERNAME is set to ${DOCKERHUB_USERNAME:0:3}***"  # substring works with bash
+      - echo "DOCKERHUB_USERNAME is set to $DOCKERHUB_USERNAME"
       - echo Logging in to Docker Hub...
       - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo Logging in to Amazon ECR...
