@@ -39,9 +39,6 @@ yarn-error.log*
 .github/
 .gitignore
 
-# Ignore Docker-related files
-Dockerfile
-.dockerignore
 
 # Ignore documentation and markdown files
 README.md
@@ -73,3 +70,4 @@ terraform_user_creds.txt
 terraform.tfvars
 cribr-cicd\cribr-secrets.yaml
 terraform1.tfvars
+cribr-cicd

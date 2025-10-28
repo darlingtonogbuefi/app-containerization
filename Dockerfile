@@ -22,8 +22,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # -------------------------------------------------------
-# 👇 Copy build-time environment variables
-#    (.env.production contains NEXT_PUBLIC_* only)
+# Copy build-time environment variables
+# (.env.production contains NEXT_PUBLIC_* only)
 # -------------------------------------------------------
 COPY .env.production .env.local
 
