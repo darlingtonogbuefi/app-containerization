@@ -40,13 +40,13 @@ resource "aws_codebuild_project" "cribr_build" {
     }
     environment_variable {
       name  = "DOCKERHUB_USERNAME"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:username::"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:DOCKERHUB_USERNAME::"
       type  = "SECRETS_MANAGER"
     }
 
     environment_variable {
       name  = "DOCKERHUB_PASSWORD"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:password::"
+      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials-0e7HCI:DOCKERHUB_PASSWORD::"
       type  = "SECRETS_MANAGER"
     }
 
