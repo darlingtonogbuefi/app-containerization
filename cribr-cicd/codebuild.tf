@@ -1,4 +1,4 @@
-# cribr-cicd\codebuild.tf
+# /cribr-cicd\codebuild.tf
 
 #############################################
 # AWS CodeBuild Project
@@ -148,15 +148,16 @@ resource "aws_codebuild_project" "cribr_build" {
 
     environment_variable {
       name  = "DOCKERHUB_USERNAME"
-      value = aws_secretsmanager_secret.dockerhub_credentials.arn
+      value = aws_secretsmanager_secret.dockerhub_username.arn
       type  = "SECRETS_MANAGER"
-    }
+   }
 
     environment_variable {
       name  = "DOCKERHUB_PASSWORD"
-      value = aws_secretsmanager_secret.dockerhub_credentials.arn
+      value = aws_secretsmanager_secret.dockerhub_password.arn
       type  = "SECRETS_MANAGER"
-    }
+   }
+
   }
 
   source {

@@ -149,19 +149,25 @@ resource "aws_secretsmanager_secret_version" "google_client_id" {
 }
 
 #############################################
-# DockerHub Credentials
+# DockerHub Credentials (split secrets)
 #############################################
-resource "aws_secretsmanager_secret" "dockerhub_credentials" {
-  name        = "${var.project_name}-dockerhub-credentials"
-  description = "DockerHub credentials (username and password)"
+
+resource "aws_secretsmanager_secret" "dockerhub_username" {
+  name        = "${var.project_name}-dockerhub-username"
+  description = "DockerHub username for CodeBuild authentication"
 }
 
-resource "aws_secretsmanager_secret_version" "dockerhub_credentials" {
-  secret_id = aws_secretsmanager_secret.dockerhub_credentials.id
+resource "aws_secretsmanager_secret_version" "dockerhub_username" {
+  secret_id     = aws_secretsmanager_secret.dockerhub_username.id
+  secret_string = var.dockerhub_username
+}
 
-  # Store both username and password in one JSON secret
-  secret_string = jsonencode({
-    DOCKERHUB_USERNAME = var.dockerhub_username
-    DOCKERHUB_PASSWORD = var.dockerhub_password
-  })
+resource "aws_secretsmanager_secret" "dockerhub_password" {
+  name        = "${var.project_name}-dockerhub-password"
+  description = "DockerHub password for CodeBuild authentication"
+}
+
+resource "aws_secretsmanager_secret_version" "dockerhub_password" {
+  secret_id     = aws_secretsmanager_secret.dockerhub_password.id
+  secret_string = var.dockerhub_password
 }

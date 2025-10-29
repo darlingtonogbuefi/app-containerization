@@ -188,13 +188,13 @@ variable "next_public_google_client_id" {
 # DockerHub Credentials
 ##############################
 variable "dockerhub_username" {
-  description = "DockerHub username used for image builds and pushes"
+  description = "DockerHub username for authentication"
   type        = string
   sensitive   = true
 }
 
 variable "dockerhub_password" {
-  description = "DockerHub password or personal access token"
+  description = "DockerHub password for authentication"
   type        = string
   sensitive   = true
 }

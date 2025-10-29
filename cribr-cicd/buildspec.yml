@@ -3,8 +3,8 @@ shell: bash
 
 env:
   secrets-manager:
-    DOCKERHUB_USERNAME: "cribr-dockerhub-credentials:DOCKERHUB_USERNAME"
-    DOCKERHUB_PASSWORD: "cribr-dockerhub-credentials:DOCKERHUB_PASSWORD"
+    DOCKERHUB_USERNAME: cribr-dockerhub-username
+    DOCKERHUB_PASSWORD: cribr-dockerhub-password
 
 phases:
   install:
