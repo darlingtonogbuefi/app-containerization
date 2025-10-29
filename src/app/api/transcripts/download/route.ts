@@ -1,30 +1,40 @@
 // src/app/api/transcripts/download/route.ts
 
 
+// src/app/api/transcripts/download/route.ts
+
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import sanitizeHtml from "sanitize-html";
 import { extractVideoId } from "@/lib/transcript/extractVideoId";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
-);
+// Create Supabase client inside the request handler (server-only)
+function getSupabaseClient() {
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL environment variable");
+  }
+  if (!process.env.SUPABASE_SERVICE_KEY) {
+    throw new Error("Missing SUPABASE_SERVICE_KEY environment variable");
+  }
+
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+}
 
 export async function GET(req: Request) {
+  const supabase = getSupabaseClient();
+
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
   const rawUrl = searchParams.get("url");
   const format = searchParams.get("format") || "txt";
 
-  console.log("Received params:", { id, url: rawUrl, format });
-
   const allowedFormats = ["txt", "json", "srt", "vtt", "md", "csv"];
   if (!allowedFormats.includes(format)) {
     return NextResponse.json(
-      {
-        error: `Invalid format '${format}'. Allowed: ${allowedFormats.join(", ")}`,
-      },
+      { error: `Invalid format '${format}'. Allowed: ${allowedFormats.join(", ")}` },
       { status: 400 }
     );
   }
@@ -50,6 +60,7 @@ export async function GET(req: Request) {
     } catch {
       return NextResponse.json({ error: "Invalid YouTube URL" }, { status: 400 });
     }
+
     query = supabase
       .from("transcripts")
       .select("transcript_text, video_title")
@@ -70,6 +81,7 @@ export async function GET(req: Request) {
   }
 
   const { transcript_text, video_title } = data;
+
   const safeTranscript = sanitizeHtml(transcript_text, {
     allowedTags: [],
     allowedAttributes: {},

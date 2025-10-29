@@ -1,3 +1,5 @@
+# cribr-deployment.yaml
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -20,3 +22,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: cribr-secrets
