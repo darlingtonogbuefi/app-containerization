@@ -49,14 +49,6 @@ phases:
       - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
-      - echo "Checking required secrets..."
-      - for var in SUPABASE_SERVICE_KEY SUPABASE_ANON_KEY NEXT_PUBLIC_SUPABASE_ANON_KEY STRIPE_SECRET_KEY STRIPE_PUBLISHABLE_KEY STRIPE_WEBHOOK_SECRET; do
-          if [ -z "${!var}" ]; then
-            echo "❌ $var is not set";
-          else
-            echo "✅ $var is set";
-          fi
-        done
 
   build:
     commands:
