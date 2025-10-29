@@ -11,6 +11,7 @@ locals {
   full_admins = {
     root           = local.root_arn
     terraform_user = aws_iam_user.terraform_user.arn
+    cicd_role      = aws_iam_role.cribr_cicd_role.arn
   }
 }
 
