@@ -1,4 +1,4 @@
-# //// cribr-cicd\outputs.tf
+# // cribr-cicd\outputs.tf
 
 #############################################
 # Outputs
