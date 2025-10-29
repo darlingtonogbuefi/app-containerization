@@ -1,4 +1,4 @@
-# poopopcribr-cicd\secrets.tf
+# cribr-cicd\secrets.tf
 
 #############################################
 # GitHub OAuth Token
