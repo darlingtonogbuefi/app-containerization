@@ -43,6 +43,8 @@ phases:
       - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app .
       - echo "Tagging Docker image for ECR..."
       - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
+      - echo "Pushing Docker image to ECR..."
+      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
 
   post_build:
     commands:
