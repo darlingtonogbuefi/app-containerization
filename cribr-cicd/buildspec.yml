@@ -39,7 +39,7 @@ phases:
   post_build:
     commands:
       - echo "Updating Kubernetes deployment..."
-      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster --role-arn arn:aws:iam::493834426110:role/cribr-cicd-role
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster #--role-arn arn:aws:iam::493834426110:role/cribr-cicd-role
       - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
       - kubectl rollout status -n cribr-ns deployment/cribr-app
       - kubectl apply -f cribr-cicd/deployment.yaml
