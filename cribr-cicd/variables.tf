@@ -1,4 +1,4 @@
-# /// cribr-cicd\variables.tf
+# /cribr-cicd\variables.tf
 
 
 #############################################
