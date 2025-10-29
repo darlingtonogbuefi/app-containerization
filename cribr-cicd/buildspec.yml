@@ -9,6 +9,10 @@ env:
     # Supabase keys
     SUPABASE_SERVICE_KEY: cribr-supabase-service-key
 
+    # Terraform user credentials
+    AWS_ACCESS_KEY_ID: cribr-terraform-user-access-key
+    AWS_SECRET_ACCESS_KEY: cribr-terraform-user-secret-key
+
 phases:
   install:
     commands:
@@ -28,6 +32,8 @@ phases:
       - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
+      - echo "Terraform user credentials are available via AWS CLI"
+      - aws sts get-caller-identity
 
   build:
     commands:
@@ -39,7 +45,7 @@ phases:
   post_build:
     commands:
       - echo "Updating Kubernetes deployment..."
-      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster #--role-arn arn:aws:iam::493834426110:role/cribr-cicd-role
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
       - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
       - kubectl rollout status -n cribr-ns deployment/cribr-app
       - kubectl apply -f cribr-cicd/deployment.yaml

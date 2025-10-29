@@ -150,14 +150,25 @@ resource "aws_codebuild_project" "cribr_build" {
       name  = "DOCKERHUB_USERNAME"
       value = aws_secretsmanager_secret.dockerhub_username.arn
       type  = "SECRETS_MANAGER"
-   }
+    }
 
     environment_variable {
       name  = "DOCKERHUB_PASSWORD"
       value = aws_secretsmanager_secret.dockerhub_password.arn
       type  = "SECRETS_MANAGER"
+    }
+
+      environment_variable {
+    name  = "AWS_ACCESS_KEY_ID"
+    type  = "SECRETS_MANAGER"
+    value = aws_secretsmanager_secret.terraform_user_access_key.arn
    }
 
+  environment_variable {
+    name  = "AWS_SECRET_ACCESS_KEY"
+    type  = "SECRETS_MANAGER"
+    value = aws_secretsmanager_secret.terraform_user_secret_key.arn
+   }
   }
 
   source {

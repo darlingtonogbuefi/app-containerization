@@ -198,3 +198,16 @@ variable "dockerhub_password" {
   type        = string
   sensitive   = true
 }
+
+
+ variable "terraform_user_access_key" {
+  description = "AWS Access Key ID for the terraform user"
+  type        = string
+  sensitive   = true
+}
+
+variable "terraform_user_secret_key" {
+  description = "AWS Secret Access Key for the terraform user"
+  type        = string
+  sensitive   = true
+}

@@ -171,3 +171,28 @@ resource "aws_secretsmanager_secret_version" "dockerhub_password" {
   secret_id     = aws_secretsmanager_secret.dockerhub_password.id
   secret_string = var.dockerhub_password
 }
+
+
+#############################################
+# Terraform User Credentials
+#############################################
+
+resource "aws_secretsmanager_secret" "terraform_user_access_key" {
+  name        = "${var.project_name}-terraform-user-access-key"
+  description = "Terraform user AWS access key"
+}
+
+resource "aws_secretsmanager_secret_version" "terraform_user_access_key" {
+  secret_id     = aws_secretsmanager_secret.terraform_user_access_key.id
+  secret_string = var.terraform_user_access_key
+}
+
+resource "aws_secretsmanager_secret" "terraform_user_secret_key" {
+  name        = "${var.project_name}-terraform-user-secret-key"
+  description = "Terraform user AWS secret key"
+}
+
+resource "aws_secretsmanager_secret_version" "terraform_user_secret_key" {
+  secret_id     = aws_secretsmanager_secret.terraform_user_secret_key.id
+  secret_string = var.terraform_user_secret_key
+}
