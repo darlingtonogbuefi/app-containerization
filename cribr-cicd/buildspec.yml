@@ -1,5 +1,4 @@
 version: 0.2
-shell: bash
 
 env:
   secrets-manager:
@@ -9,26 +8,6 @@ env:
 
     # Supabase keys
     SUPABASE_SERVICE_KEY: cribr-supabase-service-key
-    SUPABASE_ANON_KEY: cribr-supabase-anon-key
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: cribr-next-public-supabase-anon-key
-
-    # Stripe keys
-    STRIPE_SECRET_KEY: cribr-stripe-secret-key
-    STRIPE_PUBLISHABLE_KEY: cribr-stripe-publishable-key
-    STRIPE_WEBHOOK_SECRET: cribr-stripe-webhook-secret
-
-    # APIs
-    YOUTUBE_API_KEY: cribr-youtube-api-key
-    ASSEMBLYAI_API_KEY: cribr-assemblyai-api-key
-    DUMPLINGAI_API_KEY: cribr-dumplingai-api-key
-    TRANSCRIPT_IO_API_KEY: cribr-transcript-io-api-key
-
-    # OAuth / GitHub
-    GOOGLE_CLIENT_ID: cribr-google-client-id
-    GITHUB_TOKEN: cribr-github-token
-
-    # SonarQube
-    SONARQUBE_TOKEN: cribr-sonarqube-token
 
 phases:
   install:
