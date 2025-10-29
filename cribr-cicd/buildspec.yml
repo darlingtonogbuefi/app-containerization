@@ -49,25 +49,34 @@ phases:
       - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
+      - echo "Checking required secrets..."
+      - for var in SUPABASE_SERVICE_KEY SUPABASE_ANON_KEY NEXT_PUBLIC_SUPABASE_ANON_KEY STRIPE_SECRET_KEY STRIPE_PUBLISHABLE_KEY STRIPE_WEBHOOK_SECRET; do
+          if [ -z "${!var}" ]; then
+            echo "❌ $var is not set";
+          else
+            echo "✅ $var is set";
+          fi
+        done
 
   build:
     commands:
+      - echo "Exporting Docker build args..."
+      - export DOCKER_BUILD_ARGS="\
+        --build-arg SUPABASE_SERVICE_KEY=$SUPABASE_SERVICE_KEY \
+        --build-arg SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY \
+        --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY \
+        --build-arg STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY \
+        --build-arg STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY \
+        --build-arg STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET \
+        --build-arg YOUTUBE_API_KEY=$YOUTUBE_API_KEY \
+        --build-arg ASSEMBLYAI_API_KEY=$ASSEMBLYAI_API_KEY \
+        --build-arg DUMPLINGAI_API_KEY=$DUMPLINGAI_API_KEY \
+        --build-arg TRANSCRIPT_IO_API_KEY=$TRANSCRIPT_IO_API_KEY \
+        --build-arg GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
+        --build-arg GITHUB_TOKEN=$GITHUB_TOKEN \
+        --build-arg SONARQUBE_TOKEN=$SONARQUBE_TOKEN"
       - echo "Building Docker image..."
-      - docker build \
-          --build-arg SUPABASE_SERVICE_KEY=$SUPABASE_SERVICE_KEY \
-          --build-arg SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY \
-          --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY \
-          --build-arg STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY \
-          --build-arg STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY \
-          --build-arg STRIPE_WEBHOOK_SECRET=$STRIPE_WEBHOOK_SECRET \
-          --build-arg YOUTUBE_API_KEY=$YOUTUBE_API_KEY \
-          --build-arg ASSEMBLYAI_API_KEY=$ASSEMBLYAI_API_KEY \
-          --build-arg DUMPLINGAI_API_KEY=$DUMPLINGAI_API_KEY \
-          --build-arg TRANSCRIPT_IO_API_KEY=$TRANSCRIPT_IO_API_KEY \
-          --build-arg GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID \
-          --build-arg GITHUB_TOKEN=$GITHUB_TOKEN \
-          --build-arg SONARQUBE_TOKEN=$SONARQUBE_TOKEN \
-          -t cribr-app .
+      - docker build $DOCKER_BUILD_ARGS -t cribr-app .
       - echo "Tagging Docker image for ECR..."
       - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
 
@@ -77,6 +86,7 @@ phases:
       - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
       - echo "Updating Kubernetes deployment..."
       - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
+      - kubectl rollout status -n cribr-ns deployment/cribr-app
       - kubectl apply -f cribr-cicd/deployment.yaml
       - echo "Deployment complete."
 
