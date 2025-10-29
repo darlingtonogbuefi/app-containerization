@@ -1,8 +1,9 @@
-# cribr-cicd\codebuild.tf
+# cribr-cicd/codebuild.tf
 
 #############################################
 # AWS CodeBuild Project
 #############################################
+
 
 locals {
   # Map of env var name => secret name in Secrets Manager
@@ -23,6 +24,14 @@ locals {
     DOCKERHUB_USERNAME            = "dockerhub-credentials:DOCKERHUB_USERNAME"
     DOCKERHUB_PASSWORD            = "dockerhub-credentials:DOCKERHUB_PASSWORD"
   }
+
+  # Generate full ARN for each secret
+  secrets_arn_map = {
+    for key, val in local.secrets_map :
+    key => can(regex(":", val)) ?
+      "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${replace(split(":", val)[0], "_", "-")}-${split(":", val)[1]}" :
+      "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${val}"
+  }
 }
 
 resource "aws_codebuild_project" "cribr_build" {
@@ -41,7 +50,7 @@ resource "aws_codebuild_project" "cribr_build" {
     type            = "LINUX_CONTAINER"
     privileged_mode = true
 
-    # Plaintext env vars
+    # Plaintext environment variables
     environment_variable {
       name  = "AWS_ACCOUNT_ID"
       value = var.aws_account_id
@@ -86,10 +95,10 @@ resource "aws_codebuild_project" "cribr_build" {
 
     # Dynamically add all secrets from Secrets Manager
     dynamic "environment_variable" {
-      for_each = local.secrets_map
+      for_each = local.secrets_arn_map
       content {
         name  = environment_variable.key
-        value = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${replace(environment_variable.value, ":", "-")}"
+        value = environment_variable.value
         type  = "SECRETS_MANAGER"
       }
     }
