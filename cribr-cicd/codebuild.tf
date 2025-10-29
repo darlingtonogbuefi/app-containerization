@@ -1,38 +1,8 @@
-# cribr-cicd/codebuild.tf
+# cribr-cicd\codebuild.tf
 
 #############################################
 # AWS CodeBuild Project
 #############################################
-
-
-locals {
-  # Map of env var name => secret name in Secrets Manager
-  secrets_map = {
-    SUPABASE_KEY                  = "supabase-service-key"
-    SUPABASE_ANON_KEY             = "supabase-anon-key"
-    NEXT_PUBLIC_SUPABASE_ANON_KEY = "next-public-supabase-anon-key"
-    GITHUB_TOKEN                  = "github-token"
-    SONAR_TOKEN                   = "sonarqube-token"
-    STRIPE_SECRET_KEY             = "stripe-secret-key"
-    STRIPE_WEBHOOK_SECRET         = "stripe-webhook-secret"
-    STRIPE_PUBLISHABLE_KEY        = "stripe-publishable-key"
-    ASSEMBLYAI_API_KEY            = "assemblyai-api-key"
-    TRANSCRIPT_IO_API_KEY         = "transcript-io-api-key"
-    DUMPLINGAI_API_KEY            = "dumplingai-api-key"
-    YOUTUBE_API_KEY               = "youtube-api-key"
-    GOOGLE_CLIENT_ID              = "google-client-id"
-    DOCKERHUB_USERNAME            = "dockerhub-credentials:DOCKERHUB_USERNAME"
-    DOCKERHUB_PASSWORD            = "dockerhub-credentials:DOCKERHUB_PASSWORD"
-  }
-
-  # Generate full ARN for each secret
-  secrets_arn_map = {
-    for key, val in local.secrets_map :
-    key => can(regex(":", val)) ?
-      "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${replace(split(":", val)[0], "_", "-")}-${split(":", val)[1]}" :
-      "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${val}"
-  }
-}
 
 resource "aws_codebuild_project" "cribr_build" {
   name          = "${var.project_name}-build"
@@ -50,7 +20,9 @@ resource "aws_codebuild_project" "cribr_build" {
     type            = "LINUX_CONTAINER"
     privileged_mode = true
 
+    #############################################
     # Plaintext environment variables
+    #############################################
     environment_variable {
       name  = "AWS_ACCOUNT_ID"
       value = var.aws_account_id
@@ -64,14 +36,8 @@ resource "aws_codebuild_project" "cribr_build" {
     }
 
     environment_variable {
-      name  = "SONAR_PROJECT_KEY"
-      value = "darlingtonogbuefi_app-containerization"
-      type  = "PLAINTEXT"
-    }
-
-    environment_variable {
       name  = "ECR_REPO_URI"
-      value = "493834426110.dkr.ecr.${var.aws_region}.amazonaws.com/cribr-app-repo"
+      value = "493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo"
       type  = "PLAINTEXT"
     }
 
@@ -93,14 +59,103 @@ resource "aws_codebuild_project" "cribr_build" {
       type  = "PLAINTEXT"
     }
 
-    # Dynamically add all secrets from Secrets Manager
-    dynamic "environment_variable" {
-      for_each = local.secrets_arn_map
-      content {
-        name  = environment_variable.key
-        value = environment_variable.value
-        type  = "SECRETS_MANAGER"
-      }
+    environment_variable {
+      name  = "SONAR_PROJECT_KEY"
+      value = "darlingtonogbuefi_app-containerization"
+      type  = "PLAINTEXT"
+    }
+
+    #############################################
+    # Secrets from AWS Secrets Manager
+    #############################################
+    environment_variable {
+      name  = "GITHUB_TOKEN"
+      value = aws_secretsmanager_secret.github.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "SONAR_TOKEN"
+      value = aws_secretsmanager_secret.sonarqube.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "SUPABASE_ANON_KEY"
+      value = aws_secretsmanager_secret.supabase_anon_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "SUPABASE_SERVICE_KEY"
+      value = aws_secretsmanager_secret.supabase_service_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "NEXT_PUBLIC_SUPABASE_ANON_KEY"
+      value = aws_secretsmanager_secret.next_public_supabase_anon_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "STRIPE_SECRET_KEY"
+      value = aws_secretsmanager_secret.stripe_secret_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "STRIPE_WEBHOOK_SECRET"
+      value = aws_secretsmanager_secret.stripe_webhook_secret.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "STRIPE_PUBLISHABLE_KEY"
+      value = aws_secretsmanager_secret.stripe_publishable_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "ASSEMBLYAI_API_KEY"
+      value = aws_secretsmanager_secret.assemblyai_api_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "DUMPLINGAI_API_KEY"
+      value = aws_secretsmanager_secret.dumplingai_api_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "GOOGLE_CLIENT_ID"
+      value = aws_secretsmanager_secret.google_client_id.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "TRANSCRIPT_IO_API_KEY"
+      value = aws_secretsmanager_secret.transcript_io_api_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "YOUTUBE_API_KEY"
+      value = aws_secretsmanager_secret.youtube_api_key.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "DOCKERHUB_USERNAME"
+      value = aws_secretsmanager_secret.dockerhub_credentials.arn
+      type  = "SECRETS_MANAGER"
+    }
+
+    environment_variable {
+      name  = "DOCKERHUB_PASSWORD"
+      value = aws_secretsmanager_secret.dockerhub_credentials.arn
+      type  = "SECRETS_MANAGER"
     }
   }
 
