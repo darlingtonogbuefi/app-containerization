@@ -4,6 +4,27 @@
 # AWS CodeBuild Project
 #############################################
 
+locals {
+  # Map of env var name => secret name in Secrets Manager
+  secrets_map = {
+    SUPABASE_KEY                  = "supabase-service-key"
+    SUPABASE_ANON_KEY             = "supabase-anon-key"
+    NEXT_PUBLIC_SUPABASE_ANON_KEY = "next-public-supabase-anon-key"
+    GITHUB_TOKEN                  = "github-token"
+    SONAR_TOKEN                   = "sonarqube-token"
+    STRIPE_SECRET_KEY             = "stripe-secret-key"
+    STRIPE_WEBHOOK_SECRET         = "stripe-webhook-secret"
+    STRIPE_PUBLISHABLE_KEY        = "stripe-publishable-key"
+    ASSEMBLYAI_API_KEY            = "assemblyai-api-key"
+    TRANSCRIPT_IO_API_KEY         = "transcript-io-api-key"
+    DUMPLINGAI_API_KEY            = "dumplingai-api-key"
+    YOUTUBE_API_KEY               = "youtube-api-key"
+    GOOGLE_CLIENT_ID              = "google-client-id"
+    DOCKERHUB_USERNAME            = "dockerhub-credentials:DOCKERHUB_USERNAME"
+    DOCKERHUB_PASSWORD            = "dockerhub-credentials:DOCKERHUB_PASSWORD"
+  }
+}
+
 resource "aws_codebuild_project" "cribr_build" {
   name          = "${var.project_name}-build"
   description   = "CodeBuild project for ${var.project_name}"
@@ -20,7 +41,7 @@ resource "aws_codebuild_project" "cribr_build" {
     type            = "LINUX_CONTAINER"
     privileged_mode = true
 
-    # Environment variables for your build
+    # Plaintext env vars
     environment_variable {
       name  = "AWS_ACCOUNT_ID"
       value = var.aws_account_id
@@ -34,24 +55,6 @@ resource "aws_codebuild_project" "cribr_build" {
     }
 
     environment_variable {
-      name  = "SONAR_TOKEN"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-sonarqube-token-OKMk3p"
-      type  = "SECRETS_MANAGER"
-    }
-    
-    environment_variable {
-      name  = "DOCKERHUB_USERNAME"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials:DOCKERHUB_USERNAME"
-      type  = "SECRETS_MANAGER"
-    }
-
-    environment_variable {
-      name  = "DOCKERHUB_PASSWORD"
-      value = "arn:aws:secretsmanager:us-east-1:493834426110:secret:cribr-dockerhub-credentials:DOCKERHUB_PASSWORD"
-      type  = "SECRETS_MANAGER"
-    }
-
-    environment_variable {
       name  = "SONAR_PROJECT_KEY"
       value = "darlingtonogbuefi_app-containerization"
       type  = "PLAINTEXT"
@@ -59,32 +62,44 @@ resource "aws_codebuild_project" "cribr_build" {
 
     environment_variable {
       name  = "ECR_REPO_URI"
-      value = "493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo"
+      value = "493834426110.dkr.ecr.${var.aws_region}.amazonaws.com/cribr-app-repo"
+      type  = "PLAINTEXT"
     }
 
     environment_variable {
       name  = "IMAGE_TAG"
       value = "latest"
+      type  = "PLAINTEXT"
     }
 
     environment_variable {
       name  = "K8S_NAMESPACE"
       value = "cribr-ns"
+      type  = "PLAINTEXT"
     }
 
     environment_variable {
       name  = "DEPLOYMENT_YAML"
       value = "cribr-cicd/deployment.yaml"
+      type  = "PLAINTEXT"
     }
 
+    # Dynamically add all secrets from Secrets Manager
+    dynamic "environment_variable" {
+      for_each = local.secrets_map
+      content {
+        name  = environment_variable.key
+        value = "arn:aws:secretsmanager:${var.aws_region}:${var.aws_account_id}:secret:cribr-${replace(environment_variable.value, ":", "-")}"
+        type  = "SECRETS_MANAGER"
+      }
+    }
   }
 
   source {
     type      = "CODEPIPELINE"
-    buildspec = "cribr-cicd/buildspec.yml"  # make sure this matches your repo
+    buildspec = "cribr-cicd/buildspec.yml"
   }
 
-  # Optional: enable CloudWatch logs
   logs_config {
     cloudwatch_logs {
       status      = "ENABLED"
