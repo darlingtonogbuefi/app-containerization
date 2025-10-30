@@ -43,7 +43,7 @@ phases:
       - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app .
       - echo "Generating unique image tag..."
       - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-      - echo "Tagging Docker image with ECR repo and timestamp tag: $IMAGE_TAG"
+      - echo "Tagging Docker image with ECR repo and timestamp tag:$IMAGE_TAG"
       - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
       - echo "Pushing Docker image to ECR..."
       - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
@@ -55,12 +55,12 @@ phases:
       - echo "Updating Kubernetes deployment..."
       - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
       - IMAGE_TAG=$(cat image_tag.txt)
-      - echo "Deploying image with tag: $IMAGE_TAG"
+      - echo "Deploying image with tag:$IMAGE_TAG"
       - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
       - kubectl rollout status -n cribr-ns deployment/cribr-app
       - echo "Re-applying Kubernetes manifest to ensure consistency..."
       - kubectl apply -f cribr-cicd/deployment.yaml
-      - echo "Deployment complete with image tag: $IMAGE_TAG."
+      - echo "Deployment complete with image tag:$IMAGE_TAG."
 
 artifacts:
   files:
