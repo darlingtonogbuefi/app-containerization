@@ -63,7 +63,7 @@ terraform_user_creds.txt
 *.tfstate
 *.tfstate.*
 .terraform
-*.tfvars*
+*.tfvars
 
 
 
