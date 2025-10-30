@@ -46,10 +46,7 @@ phases:
       - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
       - echo "Pushing Docker image to ECR..."
       - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
-      - echo "Pushing Docker image to DockerHub..."
-      - docker tag cribr-app:latest $DOCKERHUB_USERNAME/cribr-app:$IMAGE_TAG
-      - docker push $DOCKERHUB_USERNAME/cribr-app:$IMAGE_TAG
-
+    
   post_build:
     commands:
       - echo "Updating Kubernetes deployment..."
