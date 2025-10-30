@@ -16,12 +16,13 @@ env:
     AWS_ACCESS_KEY_ID: cribr-terraform-user-access-key
     AWS_SECRET_ACCESS_KEY: cribr-terraform-user-secret-key
 
-phases:
-  install:
-    commands:
+  phases:
+    install:
+      commands:
       - echo "Ensuring Docker is available..."
       - docker --version
       - echo "Installing kubectl if not present..."
+      - |
         if ! command -v kubectl &> /dev/null; then
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
