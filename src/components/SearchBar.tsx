@@ -35,7 +35,7 @@ export default function SearchBar({ onSubmit, onClear }: SearchBarProps) {
         <input
           id="search-input"
           type="text"
-          placeholder="Hey😊Joy❤️please Enter YouTube video, playlist, or channel URL"
+          placeholder="Enter YouTube video, playlist, or channel URL"
           className="
             pr-16
             border
