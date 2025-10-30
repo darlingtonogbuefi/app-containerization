@@ -39,13 +39,13 @@ phases:
       - aws sts get-caller-identity
 
   build:
-  commands:
-    - echo "Building Docker image with tag $IMAGE_TAG..."
-    - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app:$IMAGE_TAG .
-    - echo "Tagging image for ECR..."
-    - docker tag cribr-app:$IMAGE_TAG 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
-    - echo "Pushing Docker image to ECR..."
-    - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+    commands:
+      - echo "Building Docker image with tag $IMAGE_TAG..."
+      - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app:$IMAGE_TAG .
+      - echo "Tagging image for ECR..."
+      - docker tag cribr-app:$IMAGE_TAG 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      - echo "Pushing Docker image to ECR..."
+      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
     
   post_build:
     commands:
