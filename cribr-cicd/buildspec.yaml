@@ -1,0 +1,65 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    # DockerHub credentials
+    DOCKERHUB_USERNAME: cribr-dockerhub-username
+    DOCKERHUB_PASSWORD: cribr-dockerhub-password
+
+    # Supabase keys
+    SUPABASE_SERVICE_KEY: cribr-supabase-service-key
+
+    # Terraform user credentials
+    AWS_ACCESS_KEY_ID: cribr-terraform-user-access-key
+    AWS_SECRET_ACCESS_KEY: cribr-terraform-user-secret-key
+
+phases:
+  install:
+    commands:
+      - echo "Ensuring Docker is available..."
+      - docker --version
+      - echo "Installing kubectl if not present..."
+      - if ! command -v kubectl &> /dev/null; then
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl";
+          chmod +x kubectl;
+          mv kubectl /usr/local/bin/;
+        fi
+      - kubectl version --client
+
+  pre_build:
+    commands:
+      - echo "Verifying DockerHub credentials..."
+      - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+      - echo "Logging in to Amazon ECR..."
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
+      - echo "Verifying AWS credentials..."
+      - aws sts get-caller-identity
+
+  build:
+    commands:
+      - echo "Building Docker image..."
+      - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app .
+      - echo "Generating unique image tag..."
+      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
+      - echo "Tagging Docker image with ECR repo and timestamp tag: $IMAGE_TAG"
+      - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      - echo "Pushing Docker image to ECR..."
+      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      # Save tag for later
+      - echo "IMAGE_TAG=$IMAGE_TAG" >> $CODEBUILD_SRC_DIR/image_tag.txt
+
+  post_build:
+    commands:
+      - echo "Updating Kubernetes deployment..."
+      - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
+      - IMAGE_TAG=$(cat image_tag.txt)
+      - echo "Deploying image with tag: $IMAGE_TAG"
+      - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      - kubectl rollout status -n cribr-ns deployment/cribr-app
+      - echo "Re-applying Kubernetes manifest to ensure consistency..."
+      - kubectl apply -f cribr-cicd/deployment.yaml
+      - echo "Deployment complete with image tag: $IMAGE_TAG."
+
+artifacts:
+  files:
+    - '**/*'
