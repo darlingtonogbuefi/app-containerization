@@ -2,11 +2,11 @@ version: 0.2
 
 env:
 
-  exported-variables:
-    - IMAGE_TAG
-  variables:
-    IMAGE_TAG: v1.1
-    
+  #exported-variables:
+    #- IMAGE_TAG
+  #variables:
+    #IMAGE_TAG: v1.1
+
   secrets-manager:
     # DockerHub credentials
     DOCKERHUB_USERNAME: cribr-dockerhub-username
