@@ -1,4 +1,4 @@
-#  cribr-cicd\buildspec.yml
+# cribr-cicd\buildspec.yml
 
 version: 0.2
 
@@ -34,33 +34,26 @@ phases:
       - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 493834426110.dkr.ecr.us-east-1.amazonaws.com
-      - echo "Verifying AWS credentials..."
+      - echo "Terraform user credentials are available via AWS CLI"
       - aws sts get-caller-identity
 
   build:
     commands:
       - echo "Building Docker image..."
       - docker build --build-arg SUPABASE_SERVICE_KEY="$SUPABASE_SERVICE_KEY" -t cribr-app .
-      - echo "Generating unique image tag..."
-      - IMAGE_TAG=$(date +%Y%m%d%H%M%S)
-      - echo "Tagging Docker image with ECR repo and timestamp tag:$IMAGE_TAG"
-      - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      - echo "Tagging Docker image for ECR..."
+      - docker tag cribr-app:latest 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
       - echo "Pushing Docker image to ECR..."
-      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
-      # Save tag for later
-      - echo "IMAGE_TAG=$IMAGE_TAG" >> $CODEBUILD_SRC_DIR/image_tag.txt
+      - docker push 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
 
   post_build:
     commands:
       - echo "Updating Kubernetes deployment..."
       - aws eks --region us-east-1 update-kubeconfig --name cribr-cluster
-      - IMAGE_TAG=$(cat image_tag.txt)
-      - echo "Deploying image with tag:$IMAGE_TAG"
-      - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:$IMAGE_TAG
+      - kubectl set image -n cribr-ns deployment/cribr-app cribr-container=493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
       - kubectl rollout status -n cribr-ns deployment/cribr-app
-      - echo "Re-applying Kubernetes manifest to ensure consistency..."
       - kubectl apply -f cribr-cicd/deployment.yaml
-      - echo "Deployment complete with image tag:$IMAGE_TAG."
+      - echo "Deployment complete."
 
 artifacts:
   files:
