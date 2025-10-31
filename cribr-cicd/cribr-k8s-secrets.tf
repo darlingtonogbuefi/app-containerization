@@ -6,43 +6,41 @@
 #############################################
 
 variable "k8s_namespace" {
-  type    = string
-  default = "cribr-ns"
+  default = "default"
 }
 
 variable "k8s_secrets" {
   type = map(string)
   default = {
-    cribr-supabase-anon-key             = "cribr-supabase-anon-key"
-    cribr-stripe-webhook-secret         = "cribr-stripe-webhook-secret"
-    cribr-youtube-api-key               = "cribr-youtube-api-key"
-    cribr-next-public-supabase-anon-key = "cribr-next-public-supabase-anon-key"
-    cribr-assemblyai-api-key            = "cribr-assemblyai-api-key"
-    cribr-stripe-secret-key             = "cribr-stripe-secret-key"
-    cribr-dumplingai-api-key            = "cribr-dumplingai-api-key"
-    cribr-google-client-id              = "cribr-google-client-id"
-    cribr-stripe-publishable-key        = "cribr-stripe-publishable-key"
-    cribr-transcript-io-api-key         = "cribr-transcript-io-api-key"
-    cribr-supabase-service-key          = "cribr-supabase-service-key"
+    NEXT_PUBLIC_SUPABASE_ANON_KEY   = "cribr-next-public-supabase-anon-key"
+    SUPABASE_SERVICE_KEY             = "cribr-supabase-service-key"
+    STRIPE_SECRET_KEY                = "cribr-stripe-secret-key"
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "cribr-stripe-publishable-key"
+    STRIPE_WEBHOOK_SECRET            = "cribr-stripe-webhook-secret"
+    DUMPLINGAI_API_KEY               = "cribr-dumplingai-api-key"
+    ASSEMBLYAI_API_KEY               = "cribr-assemblyai-api-key"
+    TRANSCRIPT_IO_API_KEY            = "cribr-transcript-io-api-key"
+    YOUTUBE_API_KEY                  = "cribr-youtube-api-key"
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID     = "cribr-google-client-id"
   }
 }
 
-# Fetch secrets from AWS Secrets Manager
+# Fetch each secret from AWS Secrets Manager
 data "aws_secretsmanager_secret_version" "secret" {
   for_each  = var.k8s_secrets
   secret_id = each.value
 }
 
-# Combine all secrets into a single Kubernetes secret
+# Create a single Kubernetes secret containing all keys
 resource "kubernetes_secret" "cribr_secrets_combined" {
   metadata {
     name      = "cribr-secrets"
     namespace = var.k8s_namespace
   }
 
-  data = { 
-    for k, v in var.k8s_secrets :
-    k => data.aws_secretsmanager_secret_version.secret[v].secret_string
+  data = {
+    for k in keys(var.k8s_secrets) :
+    k => data.aws_secretsmanager_secret_version.secret[k].secret_string
   }
 
   type = "Opaque"
