@@ -1,6 +1,12 @@
 //  cribr-cicd/terraform.tfvars
 
 #############################################
+# Sensitive Variables
+# ⚠️ DO NOT COMMIT THESE TO GIT
+# Use environment variables or AWS Secrets Manager
+#############################################
+
+#############################################
 # Terraform Variables for CI/CD Pipeline
 #############################################
 
@@ -70,7 +76,7 @@ next_public_google_client_id    = "cribr-google-client-id"
 
 # DockerHub Credentials
 dockerhub_username = "ogbuefidarlington@yahoo.com"
-dockerhub_password = "magnumopus"
+dockerhub_password = "xxxxxxxxx"
 
 # terraform-user IAM credentials
 

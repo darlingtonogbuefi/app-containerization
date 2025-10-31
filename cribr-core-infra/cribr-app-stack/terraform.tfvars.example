@@ -1,5 +1,11 @@
 # cribr-core-infra\cribr-app-stack\terraform.tfvars
 
+#############################################
+# Sensitive Variables
+# ⚠️ DO NOT COMMIT THESE TO GIT
+# Use environment variables or AWS Secrets Manager
+#############################################
+
 region              = "us-east-1"
 name_prefix         = "cribr"
 cluster_name        = "cribr-cluster"
