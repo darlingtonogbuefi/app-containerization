@@ -1,13 +1,13 @@
 # cribr-deployment-ns-svc-ingress.yaml
 
-
+# Namespace
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
   name: cribr-ns
 
-
+# cribr-deployment.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -30,9 +30,13 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: cribr-secrets
 
 
 
+# cribr-service-ingress.yaml
 ---
 apiVersion: v1
 kind: Service
@@ -48,7 +52,9 @@ spec:
       targetPort: 3000
       protocol: TCP
 
-      
+
+
+# cribr-ingress.yaml   
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
