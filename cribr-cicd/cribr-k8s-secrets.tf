@@ -6,7 +6,7 @@
 #############################################
 
 variable "k8s_namespace" {
-  default = "default"
+  default = "cribr-ns"
 }
 
 variable "k8s_secrets" {
