@@ -140,17 +140,58 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      # Allow Pipeline to Start Builds & Manage Artifacts
+      # 1. Explicit permission for CodeStar connection
       {
         Effect = "Allow"
         Action = [
-          "codebuild:*",
-          "codestar-connections:*",
+          "codestar-connections:UseConnection",
+          "codestar-connections:GetConnection"
+        ]
+        Resource = [
+          "arn:aws:codestar-connections:us-east-1:493834426110:connection/8268863f-464a-4b10-88ad-ffe3c4c2ce1c"
+        ]
+      },
+
+      # 2. CodeBuild permissions
+      {
+        Effect = "Allow"
+        Action = [
+          "codebuild:StartBuild",
+          "codebuild:BatchGetBuilds",
+          "codebuild:BatchGetProjects"
+        ]
+        Resource = "*"
+      },
+
+      # 3. S3 artifacts
+      {
+        Effect = "Allow"
+        Action = [
           "s3:GetObject",
           "s3:PutObject",
-          "s3:ListBucket",
-          "iam:PassRole",
-          "cloudwatch:*"
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.artifacts_bucket.arn,
+          "${aws_s3_bucket.artifacts_bucket.arn}/*"
+        ]
+      },
+
+      # 4. Pass the CodeBuild role
+      {
+        Effect = "Allow"
+        Action = "iam:PassRole"
+        Resource = aws_iam_role.codebuild_role.arn
+      },
+
+      # 5. CloudWatch logs
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:PutMetricData",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
         ]
         Resource = "*"
       }
