@@ -21,20 +21,18 @@ provider "aws" {
   region = var.aws_region
 }
 
-provider "kubernetes" {
-  config_path = "~/.kube/config"
+data "aws_eks_cluster" "cribr" {
+  name = "cribr-cluster"
 }
 
-#############################################
-# S3 Artifact Bucket (Optional - Create if Missing)
-#############################################
-# Uncomment if you want Terraform to create the artifact bucket
-#
-# resource "aws_s3_bucket" "artifacts" {
-#   bucket = "${var.project_name}-artifacts-${var.aws_account_id}"
-#   acl    = "private"
-# }
-#
-# output "artifacts_bucket_name" {
-#   value = aws_s3_bucket.artifacts.bucket
-# }
+data "aws_eks_cluster_auth" "cribr" {
+  name = data.aws_eks_cluster.cribr.name
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cribr.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cribr.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cribr.token
+
+}
+

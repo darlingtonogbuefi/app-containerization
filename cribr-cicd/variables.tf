@@ -10,6 +10,11 @@ variable "project_name" {
   type        = string
   default     = "cribr"
 }
+variable "k8s_namespace" {
+  description = "Name of the namespace in the Kubernetes cluster)"
+  type    = string
+  default = "cribr-ns"
+}
 
 variable "aws_region" {
   description = "AWS region for deployment"
@@ -22,8 +27,15 @@ variable "aws_account_id" {
   type        = string
 }
 
+# GitHub CodeStar Connection for CodePipeline
+variable "github_codestar_connection_arn" {
+  description = "The ARN of the AWS CodeStar connection to GitHub for CodePipeline"
+  type        = string
+}
+
+# GitHub repository URL and branch
 variable "source_repo_url" {
-  description = "GitHub repository URL (e.g., https://github.com/org/repo)"
+  description = "GitHub repository URL (https://github.com/org/repo)"
   type        = string
 }
 
@@ -43,11 +55,6 @@ variable "compute_type" {
   description = "Compute type for CodeBuild (e.g., BUILD_GENERAL1_SMALL)"
   type        = string
   default     = "BUILD_GENERAL1_SMALL"
-}
-
-variable "artifacts_bucket" {
-  description = "S3 bucket used by CodePipeline to store build artifacts"
-  type        = string
 }
 
 variable "github_oauth_token" {
@@ -210,4 +217,10 @@ variable "terraform_user_secret_key" {
   description = "AWS Secret Access Key for the terraform user"
   type        = string
   sensitive   = true
+}
+
+variable "artifacts_bucket" {
+  description = "S3 bucket used by CodePipeline to store build artifacts"
+  type        = string
+  default     = "cribr-codepipeline-artifacts"
 }

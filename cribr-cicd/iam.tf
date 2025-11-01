@@ -153,7 +153,11 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "iam:PassRole",
           "cloudwatch:*"
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:codestar-connections:us-east-1:493834426110:connection/8268863f-464a-4b10-88ad-ffe3c4c2ce1c",
+          aws_codebuild_project.cribr_build.arn,
+          aws_s3_bucket.artifacts_bucket.arn
+        ]
       }
     ]
   })

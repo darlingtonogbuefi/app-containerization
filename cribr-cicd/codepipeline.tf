@@ -7,17 +7,8 @@
 resource "aws_s3_bucket" "artifacts_bucket" {
   bucket = var.artifacts_bucket
 
-  versioning {
-    enabled = true
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
+  # Automatically delete all objects (including versions) when destroying the bucket
+  force_destroy = true
 
   tags = {
     Name        = "${var.project_name}-artifacts"
@@ -26,9 +17,32 @@ resource "aws_s3_bucket" "artifacts_bucket" {
 }
 
 #############################################
+# Bucket Versioning
+#############################################
+resource "aws_s3_bucket_versioning" "artifacts_bucket_versioning" {
+  bucket = aws_s3_bucket.artifacts_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+#############################################
+# Bucket Server-Side Encryption
+#############################################
+resource "aws_s3_bucket_server_side_encryption_configuration" "artifacts_bucket_sse" {
+  bucket = aws_s3_bucket.artifacts_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+#############################################
 # AWS CodePipeline
 #############################################
-
 resource "aws_codepipeline" "cribr_pipeline" {
   name     = "${var.project_name}-pipeline"
   role_arn = aws_iam_role.codepipeline_role.arn
@@ -39,27 +53,27 @@ resource "aws_codepipeline" "cribr_pipeline" {
   }
 
   #############################################
-  # Source Stage (GitHub)
+  # Source Stage (GitHub using CodeStar connection v2)
   #############################################
   stage {
-    name = "Source"
+  name = "Source"
 
-    action {
-      name             = "Git_Source"
-      category         = "Source"
-      owner            = "ThirdParty"
-      provider         = "GitHub"
-      version          = "1"
-      output_artifacts = ["source_output"]
+  action {
+    name             = "Git_Source"
+    category         = "Source"
+    owner            = "AWS"
+    provider         = "CodeStarSourceConnection" # Use CodeStar provider
+    version          = "1"
+    output_artifacts = ["source_output"]
 
-      configuration = {
-        Owner      = split("/", replace(var.source_repo_url, "https://github.com/", ""))[0]
-        Repo       = split("/", replace(var.source_repo_url, "https://github.com/", ""))[1]
-        Branch     = var.branch_name
-        OAuthToken = var.github_oauth_token
-      }
+    configuration = {
+      ConnectionArn    = var.github_codestar_connection_arn
+      FullRepositoryId = replace(var.source_repo_url, "https://github.com/", "")
+      BranchName       = var.branch_name
     }
   }
+}
+
 
   #############################################
   # Build Stage (CodeBuild)

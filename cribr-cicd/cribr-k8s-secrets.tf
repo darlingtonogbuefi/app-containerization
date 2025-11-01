@@ -1,47 +1,38 @@
 # cribr-cicd\cribr-k8s-secrets.tf
 
 #############################################
-# Kubernetes Secret from AWS Secrets Manager
-# All secrets combined into one
+# Kubernetes Secret from Terraform-managed AWS Secrets
 #############################################
 
-variable "k8s_namespace" {
-  default = "cribr-ns"
-}
-
-variable "k8s_secrets" {
-  type = map(string)
-  default = {
-    NEXT_PUBLIC_SUPABASE_ANON_KEY   = "cribr-next-public-supabase-anon-key"
-    SUPABASE_SERVICE_KEY             = "cribr-supabase-service-key"
-    STRIPE_SECRET_KEY                = "cribr-stripe-secret-key"
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "cribr-stripe-publishable-key"
-    STRIPE_WEBHOOK_SECRET            = "cribr-stripe-webhook-secret"
-    DUMPLINGAI_API_KEY               = "cribr-dumplingai-api-key"
-    ASSEMBLYAI_API_KEY               = "cribr-assemblyai-api-key"
-    TRANSCRIPT_IO_API_KEY            = "cribr-transcript-io-api-key"
-    YOUTUBE_API_KEY                  = "cribr-youtube-api-key"
-    NEXT_PUBLIC_GOOGLE_CLIENT_ID     = "cribr-google-client-id"
+locals {
+  k8s_secrets_map = {
+    NEXT_PUBLIC_SUPABASE_ANON_KEY = aws_secretsmanager_secret_version.next_public_supabase_anon_key.secret_string
+    SUPABASE_SERVICE_KEY           = aws_secretsmanager_secret_version.supabase_service_key.secret_string
+    STRIPE_SECRET_KEY              = aws_secretsmanager_secret_version.stripe_secret_key.secret_string
+    STRIPE_WEBHOOK_SECRET          = aws_secretsmanager_secret_version.stripe_webhook_secret.secret_string
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = aws_secretsmanager_secret_version.stripe_publishable_key.secret_string
+    DUMPLINGAI_API_KEY             = aws_secretsmanager_secret_version.dumplingai_api_key.secret_string
+    ASSEMBLYAI_API_KEY             = aws_secretsmanager_secret_version.assemblyai_api_key.secret_string
+    TRANSCRIPT_IO_API_KEY          = aws_secretsmanager_secret_version.transcript_io_api_key.secret_string
+    YOUTUBE_API_KEY                = aws_secretsmanager_secret_version.youtube_api_key.secret_string
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID   = aws_secretsmanager_secret_version.google_client_id.secret_string
   }
 }
 
-# Fetch each secret from AWS Secrets Manager
-data "aws_secretsmanager_secret_version" "secret" {
-  for_each  = var.k8s_secrets
-  secret_id = each.value
+
+resource "kubernetes_namespace" "cribr_ns" {
+  metadata {
+    name = var.k8s_namespace
+  }
 }
 
-# Create a single Kubernetes secret containing all keys
 resource "kubernetes_secret" "cribr_secrets_combined" {
   metadata {
     name      = "cribr-secrets"
     namespace = var.k8s_namespace
   }
 
-  data = {
-    for k in keys(var.k8s_secrets) :
-    k => data.aws_secretsmanager_secret_version.secret[k].secret_string
-  }
+  data = local.k8s_secrets_map
 
   type = "Opaque"
 }
