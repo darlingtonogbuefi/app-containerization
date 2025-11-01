@@ -1,7 +1,5 @@
 // cribr-core-infra\cribr-core-stack\main.tf
 
-// cribr-core-infra\cribr-core-stack\main.tf
-
 #############################################
 # Terraform Configuration
 #############################################
