@@ -5,9 +5,7 @@
 #############################################
 
 resource "aws_s3_bucket" "artifacts_bucket" {
-  bucket = var.artifacts_bucket
-
-  # Automatically delete all objects (including versions) when destroying the bucket
+  bucket        = var.artifacts_bucket
   force_destroy = true
 
   tags = {
@@ -41,6 +39,25 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "artifacts_bucket_
 }
 
 #############################################
+# Policy to allow CodePipeline to use CodeStar Connection
+#############################################
+resource "aws_iam_role_policy" "codepipeline_codestar_connection" {
+  name = "CodePipelineUseCodeStarConnection"
+  role = aws_iam_role.codepipeline_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = ["codestar-connections:UseConnection"],
+        Resource = var.github_codestar_connection_arn
+      }
+    ]
+  })
+}
+
+#############################################
 # AWS CodePipeline
 #############################################
 resource "aws_codepipeline" "cribr_pipeline" {
@@ -56,24 +73,23 @@ resource "aws_codepipeline" "cribr_pipeline" {
   # Source Stage (GitHub using CodeStar connection v2)
   #############################################
   stage {
-  name = "Source"
+    name = "Source"
 
-  action {
-    name             = "Git_Source"
-    category         = "Source"
-    owner            = "AWS"
-    provider         = "CodeStarSourceConnection" # Use CodeStar provider
-    version          = "1"
-    output_artifacts = ["source_output"]
+    action {
+      name             = "Git_Source"
+      category         = "Source"
+      owner            = "AWS"
+      provider         = "CodeStarSourceConnection"
+      version          = "1"
+      output_artifacts = ["source_output"]
 
-    configuration = {
-      ConnectionArn    = var.github_codestar_connection_arn
-      FullRepositoryId = replace(var.source_repo_url, "https://github.com/", "")
-      BranchName       = var.branch_name
+      configuration = {
+        ConnectionArn    = var.github_codestar_connection_arn
+        FullRepositoryId = replace(var.source_repo_url, "https://github.com/", "")
+        BranchName       = var.branch_name
+      }
     }
   }
-}
-
 
   #############################################
   # Build Stage (CodeBuild)
