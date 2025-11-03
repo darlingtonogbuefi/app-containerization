@@ -1,12 +1,11 @@
 // middleware.ts
 
-// middleware.ts
 import { updateSession } from './supabase/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  // 🧠 Log incoming requests (structured JSON format for Kibana)
+  // 🧠 Log all incoming requests (structured JSON for Kibana)
   console.log(
     JSON.stringify({
       timestamp: new Date().toISOString(),
@@ -21,7 +20,7 @@ export async function middleware(request: NextRequest) {
   return response;
 }
 
-// ✅ Limit middleware to protected dashboard routes
+// ⚡ Temporary: run middleware on all routes for debugging
 export const config = {
-  matcher: ['/dashboard/:path*'],
+  matcher: ['/:path*'],
 };
