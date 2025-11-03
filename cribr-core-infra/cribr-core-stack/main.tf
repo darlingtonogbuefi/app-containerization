@@ -76,10 +76,10 @@ module "cribr_eks" {
   eks_managed_node_groups = {
     default = {
       node_group_name = "${var.name_prefix}-node-group"
-      desired_size   = 5
-      max_size       = 10
-      min_size       = 5
-      instance_types = ["t3.micro"]
+      desired_size   = 4
+      max_size       = 5
+      min_size       = 3
+      instance_types = ["m7i-flex.large"]
       subnet_ids     = module.cribr_vpc.private_subnets
       ami_type       = "AL2023_x86_64_STANDARD"
       disk_size      = 20

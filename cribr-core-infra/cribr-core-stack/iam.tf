@@ -191,3 +191,14 @@ resource "aws_eks_access_policy_association" "full_admins_policy" {
   access_scope { type = "cluster" }
   depends_on = [aws_eks_access_entry.full_admins]
 }
+
+
+#########################################
+# EKS Nodes: Attach AmazonEBSCSIDriverPolicy
+#########################################
+
+resource "aws_iam_policy_attachment" "ebs_csi_for_nodes" {
+  name       = "ebs-csi-for-eks-nodes"
+  roles      = [module.cribr_eks.eks_managed_node_groups["default"].iam_role_name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
