@@ -25,6 +25,10 @@ spec:
     metadata:
       labels:
         app: cribr-app
+      annotations:
+        elastic.co/dataset: kubernetes.container_logs.cribr
+        elastic.co/namespace: cribr
+        elastic.co/preserve_original_event: "true"
     spec:
       containers:
         - name: cribr-container
