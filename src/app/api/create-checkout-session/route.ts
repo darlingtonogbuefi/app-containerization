@@ -1,3 +1,8 @@
+// src/app/api/create-checkout-session/route.ts
+
+
+import "@/lib/apm"; // Elastic APM monitoring
+
 import Stripe from "stripe";
 
 export async function POST(request: Request) {

@@ -1,3 +1,9 @@
+
+// src/app/api/price-info/route.ts
+
+
+import "@/lib/apm"; // Elastic APM monitoring
+
 import Stripe from "stripe";
 
 export async function GET(request: Request) {

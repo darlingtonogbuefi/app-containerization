@@ -1,46 +1,15 @@
+# cribr-deployment-ns-svc-ingress.yaml
+
+
+
 # Namespace
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cribr-ns
+#---
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: cribr-ns
 
-# ServiceAccount with minimal permissions
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: cribr-sa
-  namespace: cribr-ns
-
-# Role and RoleBinding for minimal permissions (example: read-only pods in namespace)
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: cribr-ns
-  name: cribr-role
-rules:
-  - apiGroups: [""]
-    resources: ["pods"]
-    verbs: ["get", "list"]
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: cribr-rolebinding
-  namespace: cribr-ns
-subjects:
-  - kind: ServiceAccount
-    name: cribr-sa
-    namespace: cribr-ns
-roleRef:
-  kind: Role
-  name: cribr-role
-  apiGroup: rbac.authorization.k8s.io
-
-# Deployment
+# cribr-deployment.yaml
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -61,27 +30,19 @@ spec:
         elastic.co/namespace: kube-system
         elastic.co/preserve_original_event: "true"
     spec:
-      serviceAccountName: cribr-sa
       containers:
         - name: cribr-container
-          image: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:v1.0.0
+          image: 493834426110.dkr.ecr.us-east-1.amazonaws.com/cribr-app-repo:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 3000
           envFrom:
             - secretRef:
                 name: cribr-secrets
-          resources:
-            requests:
-              cpu: "250m"
-              memory: "256Mi"
-              ephemeral-storage: "500Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
-              ephemeral-storage: "1Gi"
 
-# Service
+
+
+# cribr-service-ingress.yaml
 ---
 apiVersion: v1
 kind: Service
@@ -97,7 +58,9 @@ spec:
       targetPort: 3000
       protocol: TCP
 
-# Ingress
+
+
+# cribr-ingress.yaml   
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress

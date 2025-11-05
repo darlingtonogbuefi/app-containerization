@@ -1,5 +1,7 @@
 // src/lib/supabaseServer.ts
 
+import "@/lib/apm"; // Elastic APM monitoring
+
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
 import { type Database } from "@/types/supabase"

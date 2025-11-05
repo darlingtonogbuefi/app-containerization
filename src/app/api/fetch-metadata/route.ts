@@ -1,7 +1,8 @@
 //   src\app\api\fetch-metadata\route.ts
 
 
-// src/app/api/fetch-metadata/route.ts
+import "@/lib/apm"; // Elastic APM monitoring
+
 
 import { NextResponse } from 'next/server';
 import { getYouTubeMetadata } from '@/lib/fetchYouTubeMetadata';

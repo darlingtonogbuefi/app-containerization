@@ -1,5 +1,7 @@
 // src/app/api/transcripts/route.ts
 
+import "@/lib/apm"; // Elastic APM monitoring
+
 import { NextResponse } from "next/server";
 import { createServerSupabaseClient } from "@/lib/supabaseServer";
 import { extractVideoId } from "@/lib/transcript/extractVideoId";
