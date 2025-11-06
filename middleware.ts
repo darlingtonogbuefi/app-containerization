@@ -1,5 +1,9 @@
 // middleware.ts
 
+
+// Initialize Elastic APM before anything else
+import "@/lib/apm"; // This starts APM on the server
+
 import { updateSession } from './supabase/middleware';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';

@@ -1,5 +1,10 @@
 // supabase\middleware.ts
 
+
+// Initialize Elastic APM before anything else
+import "@/lib/apm"; // This starts APM on the server 
+
+
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 

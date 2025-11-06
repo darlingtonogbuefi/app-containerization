@@ -17,7 +17,7 @@ output "fleet_server_url" {
 output "elastic_agent_instructions" {
   description = "Next steps for verification"
   value = <<EOT
-✅ Elastic Agent Helm chart deployed successfully!
+Elastic Agent Helm chart deployed successfully!
 
 Verify:
   kubectl get pods -n elastic-system
