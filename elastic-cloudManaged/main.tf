@@ -1,7 +1,5 @@
 #  cribr-elastic-cloud\main.tf
 
-#  cribr-elastic-cloud\main.tf
-
 #############################################
 # Terraform Configuration
 #############################################

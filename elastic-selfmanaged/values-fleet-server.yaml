@@ -1,0 +1,19 @@
+agent:
+  fleet:
+    server:
+      enabled: true
+    kibanaHost: https://cribr-0e95d1.kb.us-central1.gcp.cloud.es.io
+    kibanaUser: elastic
+    kibanaPassword: WRtSuBA06aeZNenFraaFYgew
+    policyName: fleet-server-policy
+    tokenName: fleet-server-token
+  elasticsearch:
+    hosts:
+      - "https://251a6468b39c467dad20426b41b9204f.us-central1.gcp.cloud.es.io:443"
+    api_key: essu_WkZGdVNWazFiMEpCWjNkWFZWaHpWREZHUW1JNlRsQlBlWGhqTVRaRVVWRm9hbFZ1UzJGZk0wa3hVUT09AAAAAFA/f5c=
+service:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8220
+      targetPort: 8220
